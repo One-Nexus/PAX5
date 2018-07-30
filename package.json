@@ -1,0 +1,39 @@
+{
+  "name": "grd",
+  "version": "1.4.0",
+  "description": "A UI grid-system for JavaScript applications",
+  "license": "MIT",
+  "repository": "esr360/pax5",
+  "author": {
+    "name": "Edmund Reed",
+    "email": "esr360@live.com",
+    "url": "http://edmundreed.com/"
+  },
+  "keywords": [
+    "css",
+    "grid",
+    "flexbox"
+  ],
+  "main": "dist/pax5.js",
+  "dependencies": {
+    "Synergy": "^3.10.3",
+    "prop-types": "^15.6.0",
+    "react": "^16.4.0",
+    "react-dom": "^16.4.0"
+  },
+  "devDependencies": {
+    "babel-core": "^6.24.1",
+    "babel-loader": "^7.1.2",
+    "babel-preset-env": "^1.7.0",
+    "babel-preset-react": "^6.24.1",
+    "babel-preset-stage-0": "^6.24.1",
+    "babel-register": "^6.26.0",
+    "eslint": "^4.14.0",
+    "jsdoc": "^3.5.5",
+    "jsdom": "^11.0.0",
+    "jsdom-global": "^3.0.2",
+    "mocha": "^3.4.2",
+    "webpack": "^3.10.0"
+  },
+  "scripts": {}
+}
