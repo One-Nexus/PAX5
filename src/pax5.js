@@ -35,9 +35,11 @@ const defaults = {
     }
 }
 
-const PAX5 = ({ name, columns, ...props }) => {
+const PAX5 = ({ name = 'PAX5', columns, config, ...props }) => {
+    config = Module.config(defaults, config);
+
     return (
-        <PAX5.row name={name} styles={node => Module.setStyles(node, styles)} {...props}>
+        <PAX5.row name={name} config={config} styles={node => Module.setStyles(node, styles, config)} {...props}>
             {columns.map((column, index) => (
                 <PAX5.column name='column' key={index}>{column}</PAX5.column>
             ))}
@@ -45,13 +47,9 @@ const PAX5 = ({ name, columns, ...props }) => {
     );
 }
 
-PAX5.defaultProps = {
-    name: 'PAX5',
-    mechanism: 'flex'
-}
+PAX5.row = ({ name ='PAX5', config, ...props }) => {
+    config = Module.config(defaults, config);
 
-PAX5.row = ({ name ='PAX5', ...props }) => {
-    //
     const columnTypes = [
         'block',
         'default',
@@ -61,7 +59,7 @@ PAX5.row = ({ name ='PAX5', ...props }) => {
     ];
 
     return (
-        <Module name={name} styles={node => Module.setStyles(node, styles)} {...props}>
+        <Module name={name} styles={node => Module.setStyles(node, styles, config)} {...props}>
             {props.children}
         </Module>
     );
@@ -69,10 +67,12 @@ PAX5.row = ({ name ='PAX5', ...props }) => {
 
 PAX5.column = ({ name = 'column', width, ...props }) => {
 
-    const span = width ? `span-${width}` : 'span';
+    const span = width ? `span-${width}` : false;
+    const push = props.push ? `push-${props.push}` : false;
+    const pull = props.pull ? `pull-${props.pull}` : false;
 
     return (
-        <Component modifiers={[span]} name={name} {...props}>
+        <Component modifiers={[span, push, pull]} name={name} {...props}>
             {props.children}
         </Component>
     )
