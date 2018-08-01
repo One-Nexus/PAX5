@@ -20,11 +20,11 @@ const defaults = {
         'push-columns': true
     },
     'breakpoints' : {
-        'break-0': '0px',
-        'break-1': '460px',
-        'break-2': '720px',
-        'break-3': '940px',
-        'break-4': '1200px'
+        'breakpoint-0': '0px',
+        'breakpoint-1': '460px',
+        'breakpoint-2': '720px',
+        'breakpoint-3': '940px',
+        'breakpoint-4': '1200px'
     },
     'fractions' : {
         'full': [1, 1],
