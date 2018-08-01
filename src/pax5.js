@@ -66,7 +66,6 @@ PAX5.row = ({ name ='PAX5', config, ...props }) => {
 };
 
 PAX5.column = ({ name = 'column', width, ...props }) => {
-
     const span = width ? `span-${width}` : false;
     const push = props.push ? `push-${props.push}` : false;
     const pull = props.pull ? `pull-${props.pull}` : false;
@@ -77,5 +76,8 @@ PAX5.column = ({ name = 'column', width, ...props }) => {
         </Component>
     )
 };
+
+// @TODO need to add `component` and `modifier` methods to Element prototype
+// if they don't already exist
 
 export default PAX5;

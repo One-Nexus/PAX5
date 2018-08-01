@@ -7,6 +7,7 @@ export default (row, globals) => {
 
     return {
         'display': 'flex',
+        'margin-bottom': '1em',
         'flex-flow': 'wrap',
         'flex-direction': row.modifier('row-reverse') ? 'row-reverse' : false,
         'margin-left': `-${gutter}`,
@@ -14,8 +15,10 @@ export default (row, globals) => {
         column: column => {
             return {
                 'color': 'red',
+                'padding': '1em',
+                'background': 'rgba(0,0,0,0.2)',
                 'position': 'relative',
-                'flex' : column.modifier('span') ? false : '1',
+                // 'flex' : column.modifier('span') ? false : '1',
                 'margin-left': `${gutter}`,
                 'width': columnWidth(columns, row, column, gutter, globals),
                 'left': column.modifier('push') ? offsetWidth(columns, column, 'push') : false,
@@ -54,24 +57,22 @@ function columnWidth(columns, row, column, gutter, globals) {
 
     for (let i = 0; i < columns; i++) {
         if (column.modifier(`span-${i}`)) {
-            let responsiveWidth;
+            width = `${100 / columns * i}%`;
+        }
 
-            for (let [breakpoint, width] of Object.entries(globals.breakpoints)) {
-                if (window.matchMedia(`(min-width: ${width})`).matches) {
-                    for (let [fraction, value] of Object.entries(globals.fractions)) {
-                        if (column.modifier(`${breakpoint}-${fraction}`)) {
-                            responsiveWidth = `${100 / value[1] * value[0]}%`;
-                        }
+        for (let [breakpoint, value] of Object.entries(globals.breakpoints)) {
+            if (window.matchMedia(`(min-width: ${value})`).matches) {
+                for (let [fraction, value] of Object.entries(globals.fractions)) {
+                    if (column.modifier(`${breakpoint}-${fraction}`)) {
+                        width = `${100 / value[1] * value[0]}%`;
                     }
                 }
             }
-
-            width = responsiveWidth || `${100 / columns * i}%`;
-
-            if (!row.modifier('no-gutter')) {
-                width = `calc(${width} - ${gutter})`;
-            }
         }
+    }
+
+    if (!row.modifier('no-gutter')) {
+        width = `calc(${width} - ${gutter})`;
     }
 
     for (let [breakpoint, width] of Object.entries(globals.breakpoints)) {
