@@ -5,20 +5,9 @@ const defaults = {
     'options' : {
         'columns': 12,
         'gutter': '3%',
-        'col-break': '940px',
+        'col-break': '720px',
     },
-    'settings' : {
-        'responsive': true,
-        'custom-stacking': true,
-        'adaptive-columns': true,
-        'flow-columns': true,
-        'magic-columns': true,
-        'block-columns': true,
-        'no-gutter-columns': true,
-        'reverse-columns': true,
-        'pull-columns': true,
-        'push-columns': true
-    },
+    'default-stack': '720px',
     'breakpoints' : {
         'breakpoint-0': '0px',
         'breakpoint-1': '460px',
@@ -41,7 +30,7 @@ const PAX5 = ({ name = 'PAX5', columns, config, ...props }) => {
     return (
         <PAX5.row name={name} config={config} styles={node => Module.setStyles(node, styles, config)} {...props}>
             {columns.map((column, index) => (
-                <PAX5.column name='column' key={index}>{column}</PAX5.column>
+                <PAX5.column name='column' config={config} key={index}>{column}</PAX5.column>
             ))}
         </PAX5.row>
     );
@@ -50,28 +39,48 @@ const PAX5 = ({ name = 'PAX5', columns, config, ...props }) => {
 PAX5.row = ({ name ='PAX5', config, ...props }) => {
     config = Module.config(defaults, config);
 
-    const columnTypes = [
-        'block',
-        'default',
-        'flow',
-        'magic',
-        'no-gutter'
-    ];
+    const init = node => {
+        let timer;
+    
+        window.addEventListener('resize', () => {
+            clearTimeout(timer);
+        
+            timer = setTimeout(node.repaint, 100);
+        }, false);
+    }
 
     return (
-        <Module name={name} styles={node => Module.setStyles(node, styles, config)} {...props}>
+        <Module name={name} init={init} styles={node => Module.setStyles(node, styles, config)} {...props}>
             {props.children}
         </Module>
     );
 };
 
-PAX5.column = ({ name = 'column', width, ...props }) => {
-    const span = width ? `span-${width}` : false;
-    const push = props.push ? `push-${props.push}` : false;
-    const pull = props.pull ? `pull-${props.pull}` : false;
+PAX5.column = ({ name = 'column', width, config, ...props }) => {
+    config = Module.config(defaults, config);
+
+    let modifiers = [];
+
+    if (width) {
+        modifiers.push(`span-${width}`);
+    }
+
+    if (props.push) {
+        modifiers.push(`push-${props.push}`);
+    }
+
+    if (props.pull) {
+        modifiers.push(`pull-${props.pull}`);
+    }
+
+    Object.keys(config.breakpoints).forEach(breakpoint => {
+        if (props[breakpoint]) {
+            modifiers.push(`${breakpoint}-${props[breakpoint]}`);
+        }
+    });
 
     return (
-        <Component modifiers={[span, push, pull]} name={name} {...props}>
+        <Component modifiers={modifiers} name={name} {...props}>
             {props.children}
         </Component>
     )
