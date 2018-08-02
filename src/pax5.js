@@ -49,8 +49,14 @@ PAX5.row = ({ name ='PAX5', config, ...props }) => {
         }, false);
     }
 
+    let modifiers = [];
+
+    if (props.stack) {
+        modifiers.push(`stack-${props.stack}`);
+    }
+
     return (
-        <Module name={name} init={init} styles={node => Module.setStyles(node, styles, config)} {...props}>
+        <Module name={name} modifiers={modifiers} init={init} styles={node => Module.setStyles(node, styles, config)} {...props}>
             {props.children}
         </Module>
     );
@@ -59,10 +65,21 @@ PAX5.row = ({ name ='PAX5', config, ...props }) => {
 PAX5.column = ({ name = 'column', width, config, ...props }) => {
     config = Module.config(defaults, config);
 
-    let modifiers = [];
+    let modifiers = [], responsiveInterface = '';
 
     if (width) {
-        modifiers.push(`span-${width}`);
+        if (typeof width === 'string') {
+            modifiers.push(`span-${width}`);
+        } 
+        if (typeof width === 'object') {
+            Object.keys(width).forEach(i => {
+                const rule = `${i}-${width[i].join('-')}`;
+    
+                responsiveInterface += responsiveInterface ? `-${rule}` : rule;
+            });
+
+            modifiers.push(responsiveInterface);
+        }
     }
 
     if (props.push) {

@@ -23,8 +23,8 @@ export default (row, globals) => {
                 'position': 'relative',
                 'margin-left': `${gutter}`,
                 'width': columnWidth(columns, row, column, gutter, globals),
-                'left': column.modifier('push') && !column.shouldBeStacked ? offsetWidth(columns, column, 'push') : false,
-                'right': column.modifier('pull') && !column.shouldBeStacked ? offsetWidth(columns, column, 'pull') : false
+                'left' : column.modifier('push') && !column.shouldBeStacked ? offsetWidth(columns, column, 'push') : 'initial',
+                'right': column.modifier('pull') && !column.shouldBeStacked ? offsetWidth(columns, column, 'pull') : 'initial'
             }
         }
     };
@@ -42,16 +42,8 @@ export default (row, globals) => {
 function columnWidth(columns, row, column, gutter, globals) {
     let width = '100%';
 
-    // @TODO need safer way of getting target class name
-    const responsiveInterface = column.getAttribute('class')
-        .split('breakpoint')
-        .slice(1).map(breakpoint => breakpoint.split('-').filter(n => !!n));
-
-    for (let i = 0; i < columns; i++) {
-        if (column.modifier(`span-${i}`)) {
-            width = `${100 / columns * i}%`;
-        }
-    }
+    const targetClass = [...column.classList].filter(c => c.indexOf(row.getAttribute('data-module')) === 0).join();
+    const responsiveInterface = targetClass.split('breakpoint').slice(1).map(breakpoint => breakpoint.split('-').filter(n => !!n));
 
     if (responsiveInterface.length) {
         responsiveInterface.forEach(rule => {
@@ -61,16 +53,20 @@ function columnWidth(columns, row, column, gutter, globals) {
                 }
             }
         });
+    } else {
+        for (let i = 0; i < columns; i++) {
+            if (column.modifier(`span-${i}`)) {
+                width = `${100 / columns * i}%`;
+            }
+        }
     }
-
-    // console.log(width, responsiveInterface)
 
     if (!row.modifier('no-gutter')) {
         width = `calc(${width} - ${gutter})`;
     }
 
     if (column.shouldBeStacked && !column.modifier('breakpoint')) {
-        width = '100%';
+        width = `calc(100% - ${gutter})`;
     }
 
     return width;
