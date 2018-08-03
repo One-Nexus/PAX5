@@ -93,7 +93,4 @@ PAX5.column = ({ name = 'column', width, config, ...props }) => {
     )
 };
 
-// @TODO need to add `component` and `modifier` methods to Element prototype
-// if they don't already exist
-
 export default PAX5;
