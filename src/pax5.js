@@ -1,12 +1,9 @@
-import { Module, Component } from '../../../Synergy/src/index';
+import { Synergy, Module, Component } from '../../../Synergy/src/index';
 import styles from './styles.jss';
 
 const defaults = {
-    'options' : {
-        'columns': 12,
-        'gutter': '3%',
-        'col-break': '720px',
-    },
+    'columns': 12,
+    'gutter': '3%',
     'default-stack': '720px',
     'breakpoints' : {
         'breakpoint-0': '0px',
@@ -14,13 +11,6 @@ const defaults = {
         'breakpoint-2': '720px',
         'breakpoint-3': '940px',
         'breakpoint-4': '1200px'
-    },
-    'fractions' : {
-        'full': [1, 1],
-        'half': [1, 2],
-        'third': [1, 3],
-        'quarter': [1, 4],
-        'sixth': [1, 6]
     }
 }
 
@@ -30,7 +20,7 @@ const PAX5 = ({ name = 'PAX5', columns, config, ...props }) => {
     return (
         <PAX5.row name={name} config={config} styles={node => Module.setStyles(node, styles, config)} {...props}>
             {columns.map((column, index) => (
-                <PAX5.column name='column' config={config} key={index}>{column}</PAX5.column>
+                <PAX5.column width={props['column-width']} name='column' config={config} key={index}>{column}</PAX5.column>
             ))}
         </PAX5.row>
     );

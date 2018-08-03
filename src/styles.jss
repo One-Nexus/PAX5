@@ -1,30 +1,32 @@
+import { Synergy } from '../../../Synergy/src/index';
+
 /**
  * 
  */
-export default (row, globals) => {
-    const columns = globals.options.columns;
-    const gutter = globals.options.gutter;
+export default (row, config) => {
+    const columns = config.columns;
+    const gutter = config.gutter;
 
     return {
         'display': 'flex',
         'margin-bottom': '1em',
         'flex-flow': 'wrap',
-        'flex-direction': row.modifier('row-reverse') ? 'row-reverse' : false,
+        'flex-direction': Synergy(row).modifier('row-reverse') ? 'row-reverse' : false,
         'margin-left': `-${gutter}`,
 
         column: column => {
-            column.shouldBeStacked = shouldBeStacked(row, globals);
+            column.shouldBeStacked = shouldBeStacked(row, config);
 
             return {
-                'flex' : !column.modifier('span') && !column.modifier('breakpoint') && !column.shouldBeStacked ? 1 : 'none',
+                'flex' : !Synergy(column).modifier('span') && !Synergy(column).modifier('breakpoint') && !Synergy(column).shouldBeStacked ? 1 : 'none',
                 'color': 'red',
                 'padding': '1em',
                 'background': 'rgba(0,0,0,0.2)',
                 'position': 'relative',
                 'margin-left': `${gutter}`,
-                'width': columnWidth(columns, row, column, gutter, globals),
-                'left' : column.modifier('push') && !column.shouldBeStacked ? offsetWidth(columns, column, 'push') : 'initial',
-                'right': column.modifier('pull') && !column.shouldBeStacked ? offsetWidth(columns, column, 'pull') : 'initial'
+                'width': columnWidth(columns, row, column, gutter, config),
+                'left' : Synergy(column).modifier('push') && !column.shouldBeStacked ? offsetWidth(columns, column, 'push') : 'initial',
+                'right': Synergy(column).modifier('pull') && !column.shouldBeStacked ? offsetWidth(columns, column, 'pull') : 'initial'
             }
         }
     };
@@ -37,9 +39,9 @@ export default (row, globals) => {
  * @param row 
  * @param column 
  * @param gutter 
- * @param globals 
+ * @param config 
  */
-function columnWidth(columns, row, column, gutter, globals) {
+function columnWidth(columns, row, column, gutter, config) {
     let width = '100%';
 
     const targetClass = [...column.classList].filter(c => c.indexOf(row.getAttribute('data-module')) === 0).join();
@@ -47,25 +49,25 @@ function columnWidth(columns, row, column, gutter, globals) {
 
     if (responsiveInterface.length) {
         responsiveInterface.forEach(rule => {
-            if (window.matchMedia(`(min-width: ${globals.breakpoints[`breakpoint-${rule[0]}`]})`).matches) {
-                if (column.modifier(`breakpoint-${rule[0]}`)) {
+            if (window.matchMedia(`(min-width: ${config.breakpoints[`breakpoint-${rule[0]}`]})`).matches) {
+                if (Synergy(column).modifier(`breakpoint-${rule[0]}`)) {
                     return width = `${100 / rule[2] * rule[1]}%`;
                 }
             }
         });
     } else {
         for (let i = 0; i < columns; i++) {
-            if (column.modifier(`span-${i}`)) {
+            if (Synergy(column).modifier(`span-${i}`)) {
                 width = `${100 / columns * i}%`;
             }
         }
     }
 
-    if (!row.modifier('no-gutter')) {
+    if (!Synergy(row).modifier('no-gutter')) {
         width = `calc(${width} - ${gutter})`;
     }
 
-    if (column.shouldBeStacked && !column.modifier('breakpoint')) {
+    if (column.shouldBeStacked && !Synergy(column).modifier('breakpoint')) {
         width = `calc(100% - ${gutter})`;
     }
 
@@ -81,7 +83,7 @@ function columnWidth(columns, row, column, gutter, globals) {
  */
 function offsetWidth(columns, column, operator) {
     for (let i = 0; i < columns; i++) {
-        if (column.modifier(`${operator}-${i}`)) {
+        if (Synergy(column).modifier(`${operator}-${i}`)) {
             return `${100 / columns * i}%`;
         }
     }
@@ -90,13 +92,13 @@ function offsetWidth(columns, column, operator) {
 /**
  * Determine whether a columns within a row should be stacked
  * @param row 
- * @param globals 
+ * @param config 
  */
-function shouldBeStacked(row, globals) {
-    for (let [breakpoint, width] of Object.entries(globals.breakpoints)) {
-        const customStack = row.modifier(`stack-${breakpoint}`) && window.matchMedia(`(max-width: ${width})`).matches;
+function shouldBeStacked(row, config) {
+    for (let [breakpoint, width] of Object.entries(config.breakpoints)) {
+        const customStack = Synergy(row).modifier(`stack-${breakpoint}`) && window.matchMedia(`(max-width: ${width})`).matches;
 
-        if (customStack || window.matchMedia(`(max-width: ${globals['default-stack']})`).matches) {
+        if (customStack || window.matchMedia(`(max-width: ${config['default-stack']})`).matches) {
             return true;
         }
     }
