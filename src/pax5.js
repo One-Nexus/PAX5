@@ -1,4 +1,4 @@
-import { Synergy, Module, Component } from '../../../Synergy/src/index';
+import { Module, Component } from '../../../Synergy/src/index';
 import styles from './styles.jss';
 
 const defaults = {
@@ -18,7 +18,7 @@ const PAX5 = ({ name = 'PAX5', columns, config, ...props }) => {
     config = Module.config(defaults, config);
 
     return (
-        <PAX5.row name={name} config={config} styles={node => Module.setStyles(node, styles, config)} {...props}>
+        <PAX5.row name={name} config={config} styles={[styles, config]} {...props}>
             {columns.map((column, index) => (
                 <PAX5.column width={props['column-width']} name='column' config={config} key={index}>{column}</PAX5.column>
             ))}
@@ -46,7 +46,7 @@ PAX5.row = ({ name ='PAX5', config, ...props }) => {
     }
 
     return (
-        <Module name={name} modifiers={modifiers} init={init} styles={node => Module.setStyles(node, styles, config)} {...props}>
+        <Module name={name} modifiers={modifiers} init={init} styles={[styles, config]} {...props}>
             {props.children}
         </Module>
     );
