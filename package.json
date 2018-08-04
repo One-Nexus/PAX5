@@ -16,10 +16,7 @@
   ],
   "main": "dist/pax5.js",
   "dependencies": {
-    "Synergy": "^3.10.3",
-    "prop-types": "^15.6.0",
-    "react": "^16.4.0",
-    "react-dom": "^16.4.0"
+    "Synergy": "^3.10.3"
   },
   "devDependencies": {
     "babel-core": "^6.24.1",
@@ -33,6 +30,9 @@
     "jsdom": "^11.0.0",
     "jsdom-global": "^3.0.2",
     "mocha": "^3.4.2",
+    "prop-types": "^15.6.2",
+    "react": "^16.4.2",
+    "react-dom": "^16.4.2",
     "webpack": "^3.10.0"
   },
   "scripts": {}
