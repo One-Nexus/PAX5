@@ -90,7 +90,8 @@ function offsetWidth(columns, column, operator) {
 }
 
 /**
- * Determine whether a columns within a row should be stacked
+ * Determine whether columns within a row should be stacked
+ * 
  * @param row 
  * @param config 
  */
