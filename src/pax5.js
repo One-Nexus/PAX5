@@ -1,4 +1,7 @@
-import { Module, Component } from '../../../Synergy/src/index';
+import React from 'react';
+import polymorph from '../../../Polymorph/src/polymorph';
+import deepextend from 'deep-extend';
+
 import styles from './styles.jss';
 
 const defaults = {
@@ -15,28 +18,37 @@ const defaults = {
 }
 
 const PAX5 = ({ name = 'PAX5', columns, config, ...props }) => {
-    config = Module.config(defaults, config);
+    config = deepextend(defaults, config);
 
     return (
         <PAX5.row name={name} config={config} styles={[styles, config]} {...props}>
             {columns.map((column, index) => (
-                <PAX5.column width={props['column-width']} name='column' config={config} key={index}>{column}</PAX5.column>
+                <PAX5.column width={props['column-width']} name='column' config={config} key={index}>
+                    {column}
+                </PAX5.column>
             ))}
         </PAX5.row>
     );
 }
 
-PAX5.row = ({ name ='PAX5', config, ...props }) => {
-    config = Module.config(defaults, config);
+PAX5.row = ({ name ='PAX5', config, tag = 'div', ...props }) => {
+    config = deepextend(defaults, config);
 
-    const init = node => {
-        let timer;
+    const Tag = tag;
+    const modifierGlue = '-';
+
+    const ref = node => {
+        if (node) {
+            let timer;
     
-        window.addEventListener('resize', () => {
-            clearTimeout(timer);
-        
-            timer = setTimeout(node.repaint, 100);
-        }, false);
+            window.addEventListener('resize', () => {
+                clearTimeout(timer);
+            
+                timer = setTimeout(node.repaint, 100);
+            }, false);
+    
+            polymorph(node, styles, config);
+        }
     }
 
     let modifiers = [];
@@ -45,15 +57,20 @@ PAX5.row = ({ name ='PAX5', config, ...props }) => {
         modifiers.push(`stack-${props.stack}`);
     }
 
+    const namespace = name + (modifiers.length ? (modifierGlue + modifiers.join('-')) : '');
+
     return (
-        <Module name={name} modifiers={modifiers} init={init} styles={[styles, config]} {...props}>
+        <Tag className={namespace} data-module={name} ref={ref}>
             {props.children}
-        </Module>
+        </Tag>
     );
 };
 
-PAX5.column = ({ name = 'column', width, config, ...props }) => {
-    config = Module.config(defaults, config);
+PAX5.column = ({ name = 'column', width, config, tag = 'div', ...props }) => {
+    config = deepextend(defaults, config);
+
+    const modifierGlue = '-';
+    const Tag = tag;
 
     let modifiers = [], responsiveInterface = '';
 
@@ -82,14 +99,16 @@ PAX5.column = ({ name = 'column', width, config, ...props }) => {
 
     Object.keys(config.breakpoints).forEach(breakpoint => {
         if (props[breakpoint]) {
-            modifiers.push(`${breakpoint}-${props[breakpoint]}`);
+            modifiers.push(`${breakpoint}-${props[breakpoint].join('-')}`);
         }
     });
 
+    const namespace = 'PAX5_' + name + (modifiers.length ? (modifierGlue + modifiers.join('-')) : '');
+
     return (
-        <Component modifiers={modifiers} name={name} {...props}>
+        <Tag className={namespace} data-component={name}>
             {props.children}
-        </Component>
+        </Tag>
     )
 };
 
