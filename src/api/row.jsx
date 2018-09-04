@@ -22,7 +22,7 @@ export default class row extends React.Component {
 
                 node.PAX5 = { ...props };
         
-                polymorph(node, styles, this.config);
+                polymorph(node, [styles, props.jss || {}], this.config);
             }
         }
     }
