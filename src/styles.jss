@@ -11,7 +11,7 @@ export default (row, config) => {
         'margin-bottom': '1em',
         'flex-flow': 'wrap',
         'flex-direction': row.PAX5.reverse ? 'row-reverse' : false,
-        'margin-left': `-${gutter}`,
+        'margin-left': row.PAX5['no-gutter'] ? 0 : `-${gutter}`,
 
         column: column => {
             column.shouldBeStacked = shouldBeStacked(row, config);
@@ -24,7 +24,7 @@ export default (row, config) => {
                 'padding': '1em',
                 'background': 'rgba(0,0,0,0.2)',
                 'position': 'relative',
-                'margin-left': `${gutter}`,
+                'margin-left': row.PAX5['no-gutter'] ? 0 : `${gutter}`,
                 'width': columnWidth(columns, row, column, gutter, config),
                 'left' : column.PAX5.push && !column.shouldBeStacked ? offsetWidth(columns, column, 'push') : 'initial',
                 'right': column.PAX5.pull && !column.shouldBeStacked ? offsetWidth(columns, column, 'pull') : 'initial'

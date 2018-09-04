@@ -60,191 +60,17 @@
 /******/ 	__webpack_require__.p = "/";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 5);
+/******/ 	return __webpack_require__(__webpack_require__.s = 3);
 /******/ })
 /************************************************************************/
 /******/ ([
 /* 0 */
-/***/ (function(module, exports, __webpack_require__) {
+/***/ (function(module, exports) {
 
-"use strict";
-/*!
- * @description Recursive object extending
- * @author Viacheslav Lotsmanov <lotsmanov89@gmail.com>
- * @license MIT
- *
- * The MIT License (MIT)
- *
- * Copyright (c) 2013-2018 Viacheslav Lotsmanov
- *
- * Permission is hereby granted, free of charge, to any person obtaining a copy of
- * this software and associated documentation files (the "Software"), to deal in
- * the Software without restriction, including without limitation the rights to
- * use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of
- * the Software, and to permit persons to whom the Software is furnished to do so,
- * subject to the following conditions:
- *
- * The above copyright notice and this permission notice shall be included in all
- * copies or substantial portions of the Software.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS
- * FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR
- * COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
- * IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
- * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
- */
-
-
-
-function isSpecificValue(val) {
-	return (
-		val instanceof Buffer
-		|| val instanceof Date
-		|| val instanceof RegExp
-	) ? true : false;
-}
-
-function cloneSpecificValue(val) {
-	if (val instanceof Buffer) {
-		var x = Buffer.alloc
-			? Buffer.alloc(val.length)
-			: new Buffer(val.length);
-		val.copy(x);
-		return x;
-	} else if (val instanceof Date) {
-		return new Date(val.getTime());
-	} else if (val instanceof RegExp) {
-		return new RegExp(val);
-	} else {
-		throw new Error('Unexpected situation');
-	}
-}
-
-/**
- * Recursive cloning array.
- */
-function deepCloneArray(arr) {
-	var clone = [];
-	arr.forEach(function (item, index) {
-		if (typeof item === 'object' && item !== null) {
-			if (Array.isArray(item)) {
-				clone[index] = deepCloneArray(item);
-			} else if (isSpecificValue(item)) {
-				clone[index] = cloneSpecificValue(item);
-			} else {
-				clone[index] = deepExtend({}, item);
-			}
-		} else {
-			clone[index] = item;
-		}
-	});
-	return clone;
-}
-
-function safeGetProperty(object, property) {
-	return property === '__proto__' ? undefined : object[property];
-}
-
-/**
- * Extening object that entered in first argument.
- *
- * Returns extended object or false if have no target object or incorrect type.
- *
- * If you wish to clone source object (without modify it), just use empty new
- * object as first argument, like this:
- *   deepExtend({}, yourObj_1, [yourObj_N]);
- */
-var deepExtend = module.exports = function (/*obj_1, [obj_2], [obj_N]*/) {
-	if (arguments.length < 1 || typeof arguments[0] !== 'object') {
-		return false;
-	}
-
-	if (arguments.length < 2) {
-		return arguments[0];
-	}
-
-	var target = arguments[0];
-
-	// convert arguments to array and cut off target object
-	var args = Array.prototype.slice.call(arguments, 1);
-
-	var val, src, clone;
-
-	args.forEach(function (obj) {
-		// skip argument if isn't an object, is null, or is an array
-		if (typeof obj !== 'object' || obj === null || Array.isArray(obj)) {
-			return;
-		}
-
-		Object.keys(obj).forEach(function (key) {
-			src = safeGetProperty(target, key); // source value
-			val = safeGetProperty(obj, key); // new value
-
-			// recursion prevention
-			if (val === target) {
-				return;
-
-			/**
-			 * if new value isn't object then just overwrite by new value
-			 * instead of extending.
-			 */
-			} else if (typeof val !== 'object' || val === null) {
-				target[key] = val;
-				return;
-
-			// just clone arrays (and recursive clone objects inside)
-			} else if (Array.isArray(val)) {
-				target[key] = deepCloneArray(val);
-				return;
-
-			// custom cloning and overwrite for specific objects
-			} else if (isSpecificValue(val)) {
-				target[key] = cloneSpecificValue(val);
-				return;
-
-			// overwrite by new value if source isn't object or array
-			} else if (typeof src !== 'object' || src === null || Array.isArray(src)) {
-				target[key] = deepExtend({}, val);
-				return;
-
-			// source value and new value is objects both, extending...
-			} else {
-				target[key] = deepExtend(src, val);
-				return;
-			}
-		});
-	});
-
-	return target;
-};
-
+module.exports = react;
 
 /***/ }),
 /* 1 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-    value: true
-});
-exports.default = {
-    'columns': 12,
-    'gutter': '3%',
-    'default-stack': '720px',
-    'breakpoints': {
-        'breakpoint-0': '0px',
-        'breakpoint-1': '460px',
-        'breakpoint-2': '720px',
-        'breakpoint-3': '940px',
-        'breakpoint-4': '1200px'
-    }
-};
-
-/***/ }),
-/* 2 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -279,71 +105,13 @@ function getModuleNamespace(query) {
 }
 
 /***/ }),
-/* 3 */
+/* 2 */
 /***/ (function(module, exports) {
 
 module.exports = prop-types;
 
 /***/ }),
-/* 4 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-    value: true
-});
-
-var _columnWidth = __webpack_require__(11);
-
-var _columnWidth2 = _interopRequireDefault(_columnWidth);
-
-var _offsetWidth = __webpack_require__(12);
-
-var _offsetWidth2 = _interopRequireDefault(_offsetWidth);
-
-var _shouldBeStacked = __webpack_require__(13);
-
-var _shouldBeStacked2 = _interopRequireDefault(_shouldBeStacked);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-exports.default = function (row, config) {
-    var columns = config.columns;
-    var gutter = config.gutter;
-
-    return {
-        'display': 'flex',
-        'margin-bottom': '1em',
-        'flex-flow': 'wrap',
-        'flex-direction': row.PAX5.reverse ? 'row-reverse' : false,
-        'margin-left': '-' + gutter,
-
-        column: function column(_column) {
-            _column.shouldBeStacked = (0, _shouldBeStacked2.default)(row, config);
-
-            var requiredWidth = _column.PAX5.width || Object.keys(_column.PAX5).some(function (key) {
-                return ~key.indexOf('breakpoint-');
-            });
-
-            return {
-                'flex': !requiredWidth && !_column.shouldBeStacked ? 1 : 'none',
-                'color': 'red',
-                'padding': '1em',
-                'background': 'rgba(0,0,0,0.2)',
-                'position': 'relative',
-                'margin-left': '' + gutter,
-                'width': (0, _columnWidth2.default)(columns, row, _column, gutter, config),
-                'left': _column.PAX5.push && !_column.shouldBeStacked ? (0, _offsetWidth2.default)(columns, _column, 'push') : 'initial',
-                'right': _column.PAX5.pull && !_column.shouldBeStacked ? (0, _offsetWidth2.default)(columns, _column, 'pull') : 'initial'
-            };
-        }
-    };
-};
-
-/***/ }),
-/* 5 */
+/* 3 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -355,47 +123,35 @@ Object.defineProperty(exports, "__esModule", {
 
 var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
-var _deepExtend = __webpack_require__(0);
+var _react = __webpack_require__(0);
 
-var _deepExtend2 = _interopRequireDefault(_deepExtend);
+var _react2 = _interopRequireDefault(_react);
 
-var _column = __webpack_require__(6);
-
-var _column2 = _interopRequireDefault(_column);
-
-var _row = __webpack_require__(7);
+var _row = __webpack_require__(4);
 
 var _row2 = _interopRequireDefault(_row);
 
-var _styles = __webpack_require__(4);
+var _column = __webpack_require__(13);
 
-var _styles2 = _interopRequireDefault(_styles);
-
-var _config = __webpack_require__(1);
-
-var _config2 = _interopRequireDefault(_config);
+var _column2 = _interopRequireDefault(_column);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-function _objectWithoutProperties(obj, keys) { var target = {}; for (var i in obj) { if (keys.indexOf(i) >= 0) continue; if (!Object.prototype.hasOwnProperty.call(obj, i)) continue; target[i] = obj[i]; } return target; } // import React from 'react';
-
+function _objectWithoutProperties(obj, keys) { var target = {}; for (var i in obj) { if (keys.indexOf(i) >= 0) continue; if (!Object.prototype.hasOwnProperty.call(obj, i)) continue; target[i] = obj[i]; } return target; }
 
 var PAX5 = function PAX5(_ref) {
     var _ref$name = _ref.name,
         name = _ref$name === undefined ? 'PAX5' : _ref$name,
         columns = _ref.columns,
-        config = _ref.config,
-        props = _objectWithoutProperties(_ref, ['name', 'columns', 'config']);
+        props = _objectWithoutProperties(_ref, ['name', 'columns']);
 
-    config = (0, _deepExtend2.default)(_config2.default, config);
-
-    return React.createElement(
+    return _react2.default.createElement(
         PAX5.row,
-        _extends({ name: name, config: config, styles: [_styles2.default, config] }, props),
+        _extends({ name: name }, props),
         columns.map(function (column, index) {
-            return React.createElement(
+            return _react2.default.createElement(
                 PAX5.column,
-                { width: props['column-width'], name: 'column', config: config, key: index },
+                { width: props['column-width'], name: 'column', key: index },
                 column
             );
         })
@@ -407,65 +163,7 @@ Object.assign(PAX5, { row: _row2.default, column: _column2.default });
 exports.default = PAX5;
 
 /***/ }),
-/* 6 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-    value: true
-});
-
-var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
-// import React from 'react';
-
-
-exports.default = column;
-
-var _deepExtend = __webpack_require__(0);
-
-var _deepExtend2 = _interopRequireDefault(_deepExtend);
-
-var _propTypes = __webpack_require__(3);
-
-var _propTypes2 = _interopRequireDefault(_propTypes);
-
-var _config = __webpack_require__(1);
-
-var _config2 = _interopRequireDefault(_config);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-function column(props, context) {
-    var config = (0, _deepExtend2.default)(_config2.default, props.custom);
-    var componentGlue = config.componentGlue || window.Synergy && Synergy.componentGlue || '_';
-    var block = props.block || context.block || 'PAX5';
-
-    var ref = function ref(node) {
-        if (node) {
-            node.PAX5 = _extends({}, props);
-        }
-    };
-
-    return React.createElement(
-        props.tag,
-        { className: block + componentGlue + props.name, ref: ref },
-        props.children
-    );
-}
-
-column.defaultProps = {
-    name: 'column',
-    tag: 'div'
-};
-
-column.contextTypes = {
-    block: _propTypes2.default.string
-};
-
-/***/ }),
-/* 7 */
+/* 4 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -479,23 +177,23 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _deepExtend = __webpack_require__(0);
-
-var _deepExtend2 = _interopRequireDefault(_deepExtend);
-
-var _polymorph = __webpack_require__(8);
+var _polymorph = __webpack_require__(5);
 
 var _polymorph2 = _interopRequireDefault(_polymorph);
 
-var _propTypes = __webpack_require__(3);
+var _propTypes = __webpack_require__(2);
 
 var _propTypes2 = _interopRequireDefault(_propTypes);
 
-var _config = __webpack_require__(1);
+var _react = __webpack_require__(0);
+
+var _react2 = _interopRequireDefault(_react);
+
+var _config = __webpack_require__(8);
 
 var _config2 = _interopRequireDefault(_config);
 
-var _styles = __webpack_require__(4);
+var _styles = __webpack_require__(9);
 
 var _styles2 = _interopRequireDefault(_styles);
 
@@ -506,8 +204,6 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-// import React from 'react';
-
 
 var row = function (_React$Component) {
     _inherits(row, _React$Component);
@@ -517,7 +213,7 @@ var row = function (_React$Component) {
 
         var _this = _possibleConstructorReturn(this, (row.__proto__ || Object.getPrototypeOf(row)).call(this, props, context));
 
-        var config = (0, _deepExtend2.default)(_config2.default, props.custom);
+        _this.config = Object.assign(_config2.default, window.PAX5, props.custom);
 
         _this.ref = function (node) {
             if (node) {
@@ -531,7 +227,7 @@ var row = function (_React$Component) {
 
                 node.PAX5 = _extends({}, props);
 
-                (0, _polymorph2.default)(node, _styles2.default, config);
+                (0, _polymorph2.default)(node, _styles2.default, _this.config);
             }
         };
         return _this;
@@ -541,13 +237,14 @@ var row = function (_React$Component) {
         key: 'getChildContext',
         value: function getChildContext() {
             return {
-                block: this.props.name
+                block: this.props.name,
+                config: this.config
             };
         }
     }, {
         key: 'render',
         value: function render() {
-            return React.createElement(
+            return _react2.default.createElement(
                 this.props.tag,
                 { className: this.props.name, ref: this.ref },
                 this.props.children
@@ -556,7 +253,7 @@ var row = function (_React$Component) {
     }]);
 
     return row;
-}(React.Component);
+}(_react2.default.Component);
 
 exports.default = row;
 
@@ -567,11 +264,12 @@ row.defaultProps = {
 };
 
 row.childContextTypes = {
-    block: _propTypes2.default.string
+    block: _propTypes2.default.string,
+    config: _propTypes2.default.object
 };
 
 /***/ }),
-/* 8 */
+/* 5 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -587,15 +285,15 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 
 exports.default = polymorph;
 
-var _hasModifier = __webpack_require__(9);
+var _hasModifier = __webpack_require__(6);
 
 var _hasModifier2 = _interopRequireDefault(_hasModifier);
 
-var _getComponents = __webpack_require__(10);
+var _getComponents = __webpack_require__(7);
 
 var _getComponents2 = _interopRequireDefault(_getComponents);
 
-var _getModuleNamespace = __webpack_require__(2);
+var _getModuleNamespace = __webpack_require__(1);
 
 var _getModuleNamespace2 = _interopRequireDefault(_getModuleNamespace);
 
@@ -766,7 +464,7 @@ function polymorph(element, styles, config, globals, parentElement) {
 polymorph.modifier = _hasModifier2.default;
 
 /***/ }),
-/* 9 */
+/* 6 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -777,7 +475,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.default = hasModifier;
 
-var _getModuleNamespace = __webpack_require__(2);
+var _getModuleNamespace = __webpack_require__(1);
 
 var _getModuleNamespace2 = _interopRequireDefault(_getModuleNamespace);
 
@@ -816,7 +514,7 @@ function hasModifier(_ref) {
 // }
 
 /***/ }),
-/* 10 */
+/* 7 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -827,7 +525,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.default = getComponents;
 
-var _getModuleNamespace = __webpack_require__(2);
+var _getModuleNamespace = __webpack_require__(1);
 
 var _getModuleNamespace2 = _interopRequireDefault(_getModuleNamespace);
 
@@ -865,7 +563,89 @@ function getComponents(_ref) {
 }
 
 /***/ }),
-/* 11 */
+/* 8 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+exports.default = {
+    columns: 12,
+    gutter: '3%',
+    defaultStack: '720px',
+    componentGlue: '_',
+    breakpoints: {
+        'breakpoint-0': '0px',
+        'breakpoint-1': '460px',
+        'breakpoint-2': '720px',
+        'breakpoint-3': '940px',
+        'breakpoint-4': '1200px'
+    }
+};
+
+/***/ }),
+/* 9 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _columnWidth = __webpack_require__(10);
+
+var _columnWidth2 = _interopRequireDefault(_columnWidth);
+
+var _offsetWidth = __webpack_require__(11);
+
+var _offsetWidth2 = _interopRequireDefault(_offsetWidth);
+
+var _shouldBeStacked = __webpack_require__(12);
+
+var _shouldBeStacked2 = _interopRequireDefault(_shouldBeStacked);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+exports.default = function (row, config) {
+    var columns = config.columns;
+    var gutter = config.gutter;
+
+    return {
+        'display': 'flex',
+        'margin-bottom': '1em',
+        'flex-flow': 'wrap',
+        'flex-direction': row.PAX5.reverse ? 'row-reverse' : false,
+        'margin-left': row.PAX5['no-gutter'] ? 0 : '-' + gutter,
+
+        column: function column(_column) {
+            _column.shouldBeStacked = (0, _shouldBeStacked2.default)(row, config);
+
+            var requiredWidth = _column.PAX5.width || Object.keys(_column.PAX5).some(function (key) {
+                return ~key.indexOf('breakpoint-');
+            });
+
+            return {
+                'flex': !requiredWidth && !_column.shouldBeStacked ? 1 : 'none',
+                'color': 'red',
+                'padding': '1em',
+                'background': 'rgba(0,0,0,0.2)',
+                'position': 'relative',
+                'margin-left': row.PAX5['no-gutter'] ? 0 : '' + gutter,
+                'width': (0, _columnWidth2.default)(columns, row, _column, gutter, config),
+                'left': _column.PAX5.push && !_column.shouldBeStacked ? (0, _offsetWidth2.default)(columns, _column, 'push') : 'initial',
+                'right': _column.PAX5.pull && !_column.shouldBeStacked ? (0, _offsetWidth2.default)(columns, _column, 'pull') : 'initial'
+            };
+        }
+    };
+};
+
+/***/ }),
+/* 10 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -883,12 +663,14 @@ function columnWidth(columns, row, column, gutter, config) {
         return;
     }
 
+    var responsiveProps = Object.keys(column.PAX5).some(function (j) {
+        return ~j.indexOf('breakpoint-');
+    }) || _typeof(column.PAX5.width) === 'object';
+
     var width = '100%';
 
-    if (Object.keys(column.PAX5).some(function (j) {
-        return ~j.indexOf('breakpoint-');
-    }) || _typeof(column.PAX5.width) === 'object') {
-        var foo = column.PAX5.width || Object.keys(column.PAX5).filter(function (key) {
+    if (responsiveProps) {
+        var responsiveWidths = column.PAX5.width || Object.keys(column.PAX5).filter(function (key) {
             return key.indexOf('breakpoint-') === 0;
         }).reduce(function (acc, cur) {
             acc[cur] = column.PAX5[cur];
@@ -896,18 +678,16 @@ function columnWidth(columns, row, column, gutter, config) {
             return acc;
         }, {});
 
-        Object.keys(foo).forEach(function (rule, index) {
+        Object.keys(responsiveWidths).forEach(function (rule, index) {
             if (window.matchMedia('(min-width: ' + config.breakpoints['breakpoint-' + (index + 1)] + ')').matches) {
-                if (foo['breakpoint-' + (index + 1)]) {
-                    return width = 100 / foo[rule][1] * foo[rule][0] + '%';
+                if (responsiveWidths['breakpoint-' + (index + 1)]) {
+                    return width = 100 / responsiveWidths[rule][1] * responsiveWidths[rule][0] + '%';
                 }
             }
         });
-    } else {
-        for (var i = 0; i < columns; i++) {
-            if (column.PAX5.width == i) {
-                width = 100 / columns * i + '%';
-            }
+    } else for (var i = 0; i < columns; i++) {
+        if (column.PAX5.width == i) {
+            width = 100 / columns * i + '%';
         }
     }
 
@@ -915,9 +695,7 @@ function columnWidth(columns, row, column, gutter, config) {
         width = 'calc(' + width + ' - ' + gutter + ')';
     }
 
-    if (column.shouldBeStacked && !(Object.keys(column.PAX5).some(function (j) {
-        return ~j.indexOf('breakpoint-');
-    }) || _typeof(column.PAX5.width) === 'object')) {
+    if (column.shouldBeStacked && !responsiveProps) {
         width = 'calc(100% - ' + gutter + ')';
     }
 
@@ -925,7 +703,7 @@ function columnWidth(columns, row, column, gutter, config) {
 }
 
 /***/ }),
-/* 12 */
+/* 11 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -944,7 +722,7 @@ function offsetWidth(columns, column, operator) {
 }
 
 /***/ }),
-/* 13 */
+/* 12 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -971,9 +749,9 @@ function shouldBeStacked(row, config) {
             var breakpoint = _ref2[0];
             var width = _ref2[1];
 
-            var customStack = row.PAX5.stack == breakpoint && window.matchMedia('(max-width: ' + width + ')').matches;
+            var customStack = row.PAX5.stack == breakpoint && window.matchMedia("(max-width: " + width + ")").matches;
 
-            if (customStack || window.matchMedia('(max-width: ' + config['default-stack'] + ')').matches) {
+            if (customStack || window.matchMedia("(max-width: " + config.defaultStack + ")").matches) {
                 return true;
             }
         }
@@ -994,6 +772,58 @@ function shouldBeStacked(row, config) {
 
     return false;
 }
+
+/***/ }),
+/* 13 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
+exports.default = column;
+
+var _propTypes = __webpack_require__(2);
+
+var _propTypes2 = _interopRequireDefault(_propTypes);
+
+var _react = __webpack_require__(0);
+
+var _react2 = _interopRequireDefault(_react);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function column(props, context) {
+    var config = Object.assign(context.config, props.custom);
+    var block = props.block || context.block || 'PAX5';
+
+    var ref = function ref(node) {
+        if (node) {
+            node.PAX5 = _extends({}, props);
+        }
+    };
+
+    return _react2.default.createElement(
+        props.tag,
+        { className: block + config.componentGlue + props.name, ref: ref },
+        props.children
+    );
+}
+
+column.defaultProps = {
+    name: 'column',
+    tag: 'div'
+};
+
+column.contextTypes = {
+    block: _propTypes2.default.string,
+    config: _propTypes2.default.object
+};
 
 /***/ })
 /******/ ]);

@@ -1,4 +1,3 @@
-import deepextend from 'deep-extend';
 import polymorph from '../../../../Polymorph/src/polymorph';
 import PropTypes from 'prop-types';
 import React from 'react';
@@ -9,7 +8,7 @@ export default class row extends React.Component {
     constructor(props, context) {
         super(props, context);
 
-        const config = deepextend(defaults, props.custom);
+        this.config = Object.assign(defaults, window.PAX5, props.custom);
 
         this.ref = node => {
             if (node) {
@@ -23,14 +22,15 @@ export default class row extends React.Component {
 
                 node.PAX5 = { ...props };
         
-                polymorph(node, styles, config);
+                polymorph(node, styles, this.config);
             }
         }
     }
 
     getChildContext() {
         return { 
-            block: this.props.name
+            block: this.props.name,
+            config: this.config
         };
     }
 
@@ -49,5 +49,6 @@ row.defaultProps = {
 }
 
 row.childContextTypes = {
-    block: PropTypes.string
+    block: PropTypes.string,
+    config: PropTypes.object
 };
