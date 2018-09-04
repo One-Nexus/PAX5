@@ -1,32 +1,39 @@
-import hasModifier from './hasModifier';
-
 export default function columnWidth(columns, row, column, gutter, config) {
+    if (!column.PAX5) {
+        return;
+    }
+
     let width = '100%';
 
-    const targetClass = [...column.classList].filter(c => c.indexOf(row.getAttribute('data-module')) === 0).join();
-    const responsiveInterface = targetClass.split('breakpoint').slice(1).map(breakpoint => breakpoint.split('-').filter(n => !!n));
+    if (Object.keys(column.PAX5).some(j => ~j.indexOf('breakpoint-')) || typeof column.PAX5.width === 'object') {
+        const foo = column.PAX5.width || Object.keys(column.PAX5).filter(key => key.indexOf('breakpoint-') === 0).reduce((acc, cur) => {
+            acc[cur] = column.PAX5[cur];
 
-    if (responsiveInterface.length) {
-        responsiveInterface.forEach(rule => {
-            if (window.matchMedia(`(min-width: ${config.breakpoints[`breakpoint-${rule[0]}`]})`).matches) {
-                if (hasModifier(column, `breakpoint-${rule[0]}`, '-')) {
-                    return width = `${100 / rule[2] * rule[1]}%`;
+            return acc;
+        }, {});
+
+        Object.keys(foo).forEach((rule, index) => {
+            if (window.matchMedia(`(min-width: ${config.breakpoints[`breakpoint-${index + 1}`]})`).matches) {
+                if (foo[`breakpoint-${index + 1}`]) {
+                    return width = `${100 / foo[rule][1] * foo[rule][0]}%`;
                 }
             }
         });
-    } else {
+    }
+    
+    else {
         for (let i = 0; i < columns; i++) {
-            if (hasModifier(column, `span-${i}`, '-')) {
+            if (column.PAX5.width == i) {
                 width = `${100 / columns * i}%`;
             }
         }
     }
 
-    if (!hasModifier(row, 'no-gutter', '-')) {
+    if (!row.PAX5['no-gutter']) {
         width = `calc(${width} - ${gutter})`;
     }
 
-    if (column.shouldBeStacked && !hasModifier(column, 'breakpoint', '-')) {
+    if (column.shouldBeStacked && !(Object.keys(column.PAX5).some(j => ~j.indexOf('breakpoint-')) || typeof column.PAX5.width === 'object')) {
         width = `calc(100% - ${gutter})`;
     }
 

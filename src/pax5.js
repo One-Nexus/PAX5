@@ -1,8 +1,7 @@
 import React from 'react';
 import deepextend from 'deep-extend';
-
-import Column from './api/column';
-import Row from './api/row';
+import column from './api/column.jsx';
+import row from './api/row.jsx';
 import styles from './styles.jss';
 import defaults from './config';
 
@@ -20,7 +19,6 @@ const PAX5 = ({ name = 'PAX5', columns, config, ...props }) => {
     );
 }
 
-PAX5.row = Row;
-PAX5.column = Column;
+Object.assign(PAX5, { row, column })
 
 export default PAX5;

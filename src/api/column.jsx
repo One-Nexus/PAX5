@@ -1,53 +1,29 @@
-import PropTypes from 'prop-types';
 import deepextend from 'deep-extend';
+import PropTypes from 'prop-types';
+import React from 'react';
 import defaults from '../config';
 
-export default function column({ block = 'PAX5', name = 'column', Tag = 'div', width, custom, ...props }, context) {
-    const config = deepextend(defaults, custom);
-    const modifierGlue = config.modifierGlue || (window.Synergy && Synergy.modifierGlue) || '-';
+export default function column(props, context) {
+    const config = deepextend(defaults, props.custom);
     const componentGlue = config.componentGlue || (window.Synergy && Synergy.componentGlue) || '_';
+    const block = props.block || context.block || 'PAX5';
 
-    let modifiers = [];
-    let responsiveInterface = '';
-
-    console.log(context);
-
-    if (width) {
-        if (typeof width === 'string') {
-            modifiers.push(`span-${width}`);
-        } 
-        if (typeof width === 'object') {
-            Object.keys(width).forEach(i => {
-                const rule = `${i}-${width[i].join(modifierGlue)}`;
-    
-                responsiveInterface += responsiveInterface ? `${modifierGlue + rule}` : rule;
-            });
-
-            modifiers.push(responsiveInterface);
+    const ref = node => {
+        if (node) {
+            node.PAX5 = { ...props };
         }
     }
-
-    if (props.push) {
-        modifiers.push(`push-${props.push}`);
-    }
-
-    if (props.pull) {
-        modifiers.push(`pull-${props.pull}`);
-    }
-
-    Object.keys(config.breakpoints).forEach(breakpoint => {
-        if (props[breakpoint]) {
-            modifiers.push(`${breakpoint}-${props[breakpoint].join(modifierGlue)}`);
-        }
-    });
-
-    const namespace = block + componentGlue + name + (modifiers.length ? (modifierGlue + modifiers.join(modifierGlue)) : '');
 
     return (
-        <Tag className={namespace} data-component={name}>
+        <props.tag className={block + componentGlue + props.name} ref={ref}>
             {props.children}
-        </Tag>
+        </props.tag>
     );
+}
+
+column.defaultProps = {
+    name: 'column',
+    tag: 'div'
 }
 
 column.contextTypes = {

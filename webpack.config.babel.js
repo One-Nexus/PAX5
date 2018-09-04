@@ -18,7 +18,8 @@ export default function() {
 
         externals: {
             'react': 'react',
-            'react-dom': 'react-dom'
+            'react-dom': 'react-dom',
+            'prop-types': 'prop-types'
         },
 
         plugins: [
