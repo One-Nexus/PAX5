@@ -8,7 +8,10 @@ export default class row extends React.Component {
     constructor(props, context) {
         super(props, context);
 
-        this.config = Object.assign(defaults, window.PAX5, props.custom);
+        defaults.componentGlue = (window.Synergy && Synergy.componentGlue) || defaults.componentGlue;
+        defaults.modifierGlue  = (window.Synergy && Synergy.modifierGlue)  || defaults.modifierGlue;
+
+        this.config = Object.assign(defaults, props.custom);
 
         this.ref = node => {
             if (node) {
