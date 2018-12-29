@@ -1,4 +1,4 @@
-import polymorph from '../../../../Polymorph/src/polymorph';
+import polymorph from '../../../../Polymorph/Polymorph/src/polymorph';
 import PropTypes from 'prop-types';
 import React from 'react';
 import defaults from '../config';

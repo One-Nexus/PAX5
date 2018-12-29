@@ -20,9 +20,6 @@ export default (row, config) => {
 
             return {
                 'flex' : !requiredWidth && !column.shouldBeStacked ? 1 : 'none',
-                'color': 'red',
-                'padding': '1em',
-                'background': 'rgba(0,0,0,0.2)',
                 'position': 'relative',
                 'margin-left': row.PAX5['no-gutter'] ? 0 : `${gutter}`,
                 'width': columnWidth(columns, row, column, gutter, config),
